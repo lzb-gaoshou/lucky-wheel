@@ -304,16 +304,19 @@ function spin() {
     if (rnd <= 0) { picked = i; break; }
   }
 
-  // 计算目标角度（slices 从 -π/2 开始，与 drawWheel 保持一致）
+  // slices 从 -π/2 开始，与 drawWheel 保持一致
   let slices = [-Math.PI / 2];
   items.forEach((item, i) => {
     slices.push(slices[i] + (item.weight / total) * Math.PI * 2);
   });
   const mid = slices[picked] + (slices[picked + 1] - slices[picked]) / 2;
   const extraSpins = Math.PI * 2 * (6 + Math.floor(Math.random() * 4));
-  // 让 mid 转到 -π/2（顶部），即目标偏移 = -π/2 - mid
-  const targetAngle = extraSpins + (-Math.PI / 2 - mid);
   const startA = currentAngle;
+  // 基于当前角度计算到达目标的增量
+  const desired = -Math.PI / 2 - mid;
+  let delta = (desired - startA) % (Math.PI * 2);
+  if (delta < 0) delta += Math.PI * 2;
+  const targetAngle = extraSpins + delta;
   const duration = 4200;
   const t0 = performance.now();
 
@@ -326,6 +329,8 @@ function spin() {
     if (t < 1) {
       requestAnimationFrame(animate);
     } else {
+      // 归一化 currentAngle，防止多次旋转后累积误差
+      currentAngle = currentAngle % (Math.PI * 2);
       spinning = false;
       document.getElementById('spinBtn').disabled = false;
       const box = document.getElementById('resultBox');
