@@ -16,4 +16,4 @@
 
 ## 在线访问
 
-> 部署后填写 GitHub Pages 地址
+> [部署后填写 GitHub Pages 地址](https://github.com/lzb-gaoshou/lucky-wheel)
